@@ -1,8 +1,12 @@
+import { useState } from "react";
 import GameLogic from "../GameLogic";
 import gameField from "../game_field.png"
+import EndDialog from "./EndDialog";
 
 export default function GameField(){
-    const game = new GameLogic();
+    const [isEnd, setIsEnd] = useState(false);
+    const [winner, setWinner] = useState("");
+    const game = new GameLogic(setIsEnd, setWinner);
     var gameInitiated = false
 
     function drawGameBoard(){
@@ -54,12 +58,20 @@ export default function GameField(){
         const c = document.getElementById("gameArea")
         const ctx = c.getContext("2d")
     
-        game.clearGame()
         ctx.clearRect(0, 0, c.width, c.height)
+    }
+
+    function newGame(){
+        clearCanvas();
+        setWinner("")
+        setIsEnd(false)
+        gameInitiated = true
+        drawGameBoard()
     }
 
     return (
         <div>
+            {isEnd ? <EndDialog onClick={newGame} style={styles.button} winner={winner} /> : <></>}
             <canvas id="gameArea" width="1200" height="700"></canvas>
             <div>
                 <button onClick={drawGameBoard} style={styles.button}>Start game</button>
