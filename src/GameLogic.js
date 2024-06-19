@@ -1,7 +1,9 @@
 export default class GameLogic{
-    constructor(){
+    constructor(end, winner){
         this.stacks = [0,0,0,0,0,0,0]
         this.isRed = true
+        this.end = end
+        this.winner = winner
 
         // For tracking game state and checking winning lines
         this.gameState = [[0,0,0,0,0,0,0],
@@ -86,16 +88,17 @@ export default class GameLogic{
                 break;
             default:
                 lastTurn = 0;
-                console.log("Click on the game board!");
                 break;
         }
         this.checkTurn()
         if(this.isWin(lastTurn)){
+            this.end(true)
             this.clearGame();
         }
 
         if(this.stacks.reduce((a,b) => a + b, 0) >= 42){
             this.gameTied();
+            this.end(true)
         }
         
     }
@@ -160,11 +163,8 @@ export default class GameLogic{
         this.isRed ? ctx.fillText("Player 1's turn", 500, 50) : ctx.fillText("Player 2's turn", 500, 50)
     }
 
-    drawWinLine(start,end, lastTurn){
+    drawWinLine(start, end, lastTurn){
         const ctx = document.getElementById("gameArea").getContext("2d")
-
-        console.log("start:", start)
-        console.log("end:", end)
 
         ctx.beginPath();
         ctx.moveTo(start.x, start.y)
@@ -177,14 +177,17 @@ export default class GameLogic{
         ctx.font = "30px Arial"
         ctx.fillStyle = "black"
         lastTurn === 1 ? ctx.fillText("Player 1 WON!", 500, 50) : ctx.fillText("Player 2 WON!", 500, 50)
+        this.winner(lastTurn === 1 ? "Player 1" : "Player 2")
     }
 
     isWin(latestTurn){
-        if(latestTurn === 0) return false;
+        // No more "'i' is already defined" warning...
+        var i = 0
+        var j = 0
 
         // Horizontal check
-        for(var i=0; i < this.gameState.length; i++){
-            for(var j=0; j < this.gameState[i].length-3; j++){
+        for(i=0; i < this.gameState.length; i++){
+            for(j=0; j < this.gameState[i].length-3; j++){
                 if(this.gameState[i][j] === latestTurn && this.gameState[i][j+1] === latestTurn && this.gameState[i][j+2] === latestTurn && this.gameState[i][j+3] === latestTurn){
                     this.drawWinLine(this.coordinates[i][j], this.coordinates[i][j+3], latestTurn)
                     return true
@@ -193,8 +196,8 @@ export default class GameLogic{
         }
 
         // Vertical check
-        for(var i=0; i < this.gameState.length-3; i++){
-            for(var j=0; j < this.gameState[i].length; j++){
+        for(i=0; i < this.gameState.length-3; i++){
+            for(j=0; j < this.gameState[i].length; j++){
                 if(this.gameState[i][j] === latestTurn && this.gameState[i+1][j] === latestTurn && this.gameState[i+2][j] === latestTurn && this.gameState[i+3][j] === latestTurn){
                     this.drawWinLine(this.coordinates[i][j], this.coordinates[i+3][j], latestTurn)
                     return true
@@ -203,8 +206,8 @@ export default class GameLogic{
         }
 
         // Diagonal check
-        for(var i=0; i < this.gameState.length-3; i++){
-            for(var j=3; j < this.gameState[i].length; j++){
+        for(i=0; i < this.gameState.length-3; i++){
+            for(j=3; j < this.gameState[i].length; j++){
                 if(this.gameState[i][j] === latestTurn && this.gameState[i+1][j-1] === latestTurn && this.gameState[i+2][j-2] === latestTurn && this.gameState[i+3][j-3] === latestTurn){
                     this.drawWinLine(this.coordinates[i][j], this.coordinates[i+3][j-3], latestTurn)
                     return true
@@ -213,8 +216,8 @@ export default class GameLogic{
         }
 
         // Diagonal check
-        for(var i=3; i < this.gameState.length; i++){
-            for(var j=3; j < this.gameState[i].length; j++){
+        for(i=3; i < this.gameState.length; i++){
+            for(j=3; j < this.gameState[i].length; j++){
                 if(this.gameState[i][j] === latestTurn && this.gameState[i-1][j-1] === latestTurn && this.gameState[i-2][j-2] === latestTurn && this.gameState[i-3][j-3] === latestTurn){
                     this.drawWinLine(this.coordinates[i][j], this.coordinates[i-3][j-3], latestTurn)
                     return true
