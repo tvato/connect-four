@@ -72,7 +72,7 @@ export default function GameField(){
     return (
         <div>
             {isEnd ? <EndDialog onClick={newGame} style={styles.button} winner={winner} /> : <></>}
-            <canvas id="gameArea" width="1200" height="700"></canvas>
+            <canvas id="gameArea" width="1200" height="700" style={isEnd ? {pointerEvents: "none"} : {} }></canvas>
             <div>
                 <button onClick={drawGameBoard} style={styles.button}>Start game</button>
                 <button onClick={clearCanvas} style={styles.button}>Clear</button>
