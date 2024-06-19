@@ -4,7 +4,7 @@ export default function EndDialog(props){
 
     return (
         <div style={styles.main}>
-            <h1>{props.winner} WON!</h1>
+            <h1>{props.winner}</h1>
             <button onClick={props.onClick} style={props.style}>New Game</button>
         </div>
     );

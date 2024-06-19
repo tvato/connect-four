@@ -99,6 +99,7 @@ export default class GameLogic{
         if(this.stacks.reduce((a,b) => a + b, 0) >= 42){
             this.gameTied();
             this.end(true)
+            this.clearGame();
         }
         
     }
@@ -111,6 +112,8 @@ export default class GameLogic{
         ctx.font = "30px Arial"
         ctx.fillStyle = "black"
         ctx.fillText("TIE!", 570, 50)
+
+        this.winner("TIE!")
     }
 
     drawRed(x, y){
@@ -177,7 +180,7 @@ export default class GameLogic{
         ctx.font = "30px Arial"
         ctx.fillStyle = "black"
         lastTurn === 1 ? ctx.fillText("Player 1 WON!", 500, 50) : ctx.fillText("Player 2 WON!", 500, 50)
-        this.winner(lastTurn === 1 ? "Player 1" : "Player 2")
+        this.winner(lastTurn === 1 ? "Player 1 WON!" : "Player 2 WON!")
     }
 
     isWin(latestTurn){
